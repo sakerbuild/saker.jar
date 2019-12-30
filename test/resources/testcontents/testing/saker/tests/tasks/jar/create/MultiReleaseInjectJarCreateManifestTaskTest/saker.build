@@ -1,0 +1,62 @@
+build(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: output.jar,
+		Manifest: {
+			MainAttributes: {
+				MyAttr: abc,
+			},
+		},
+		MultiReleaseContents: {
+			8: {
+				Resources: a.txt,
+			},
+			9: {
+				Resources: b.txt,
+			},
+		},
+	)
+}
+
+resmanifest(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: resmanifestout.jar,
+		Resources: {
+			Resources: META-INF/MANIFEST.MF,
+		},
+		MultiReleaseContents: {
+			8: {
+				Resources: a.txt,
+			},
+			9: {
+				Resources: b.txt,
+			},
+		},
+	)
+}
+
+genmanifest(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: genmanifestout.jar,
+		MultiReleaseContents: {
+			8: {
+				Resources: {
+					Resources: a.txt,
+				},
+			},
+			9: {
+				Resources: {
+					Resources: b.txt,
+				},
+			},
+		},
+	)
+}

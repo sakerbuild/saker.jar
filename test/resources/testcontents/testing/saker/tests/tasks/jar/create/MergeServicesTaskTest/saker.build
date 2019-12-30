@@ -1,0 +1,18 @@
+build(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: output.jar, 
+		Resources: {
+			Directory: res,
+			Resources: **
+		},
+		Services: {
+			my.Service: [
+				injected.Service,
+				commented.Service,
+			]
+		},
+	)
+}

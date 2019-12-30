@@ -1,0 +1,22 @@
+build(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: output.jar,
+		Resources: {
+			Resources: META-INF/MANIFEST.MF,
+		},
+		Manifest: {
+			MainAttributes: {
+				MyAttr: abc,
+			},
+			EntryAttributes: {
+				MySubAttr: {
+					SubAttr1: 123,
+					SubAttr2: 456,
+				},
+			},
+		} 
+	)
+}
