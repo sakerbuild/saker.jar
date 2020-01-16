@@ -105,12 +105,17 @@ test(){
 	$export = include(export)
 	$jar = $export[jar]
 	
+	$instrumentedjar = nest.test.instrument(
+		nest.bundle.download("saker.build-test-v{ static(VERSION_saker.build) }")[BundlePaths][0],
+		NestVersion: static(VERSION_saker.nest),
+	)
+	
 	$jarpath = $jar[Path]
 	$testcompile = saker.java.compile(
 		SourceDirectories: src/test/,
 		ClassPath: [
+			$instrumentedjar,
 			saker.java.classpath.bundle([
-				"saker.nest-test-saker.build-v{ static(VERSION_saker.build) }",
 				"saker.build-test-runner-v{ static(VERSION_saker.build) }",
 				"saker.build-test-utils-v{ static(VERSION_saker.build) }",
 				"saker.nest-test-utils-v{ static(VERSION_saker.nest )}"
@@ -128,7 +133,7 @@ test(){
 			saker.java.classpath.bundle("saker.build-test-runner-v{ static(VERSION_saker.build) }"),
 		],
 		ClassPath: [
-			saker.java.classpath.bundle("saker.nest-test-saker.build-v{ static(VERSION_saker.build) }"),
+			$instrumentedjar,
 		],
 		DependencyClassPath: [
 			$export[compile][javac],
@@ -158,7 +163,7 @@ test(){
 			}
 		},
 		TestInvokerParameters: {
-			SakerJarPath: nest.bundle.localize("saker.nest-test-saker.build-v{ static(VERSION_saker.build) }")[BundleLocalPaths][0],
+			SakerJarPath: std.file.mirror($instrumentedjar),
 			TimeoutMillis: 120000,
 			TestsBaseBuildDirectory: std.file.mirror.path(std.file.place(test/build)),
 		},
