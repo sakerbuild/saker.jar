@@ -57,6 +57,7 @@ import saker.nest.utils.FrontendTaskFactory;
 import saker.build.thirdparty.saker.util.ImmutableUtils;
 import saker.build.thirdparty.saker.util.ObjectUtils;
 import saker.build.thirdparty.saker.util.function.Functionals;
+import saker.build.trace.BuildTrace;
 import saker.zip.api.create.ZipCreationTaskBuilder;
 import saker.zip.main.create.ZipCreateTaskFactory;
 import saker.zip.main.create.option.ZipContentsTaskOption;
@@ -183,6 +184,10 @@ public class JarCreateTaskFactory extends FrontendTaskFactory<Object> {
 
 		@Override
 		public Object run(TaskContext taskcontext) throws Exception {
+			if (saker.build.meta.Versions.VERSION_FULL_COMPOUND >= 8_006) {
+				BuildTrace.classifyTask(BuildTrace.CLASSIFICATION_FRONTEND);
+			}
+			
 			ZipCreateDataContext zipdata = this.zipDataContext.clone();
 			Map<String, Collection<String>> services = ObjectUtils.cloneTreeMap(this.servicesOption,
 					Functionals.identityFunction(), ImmutableUtils::makeImmutableLinkedHashSet);
