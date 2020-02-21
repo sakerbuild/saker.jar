@@ -16,7 +16,6 @@
 package saker.jar.create;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -37,13 +36,15 @@ import saker.build.task.TaskFactory;
 import saker.build.task.identifier.TaskIdentifier;
 import saker.build.task.utils.SimpleStructuredObjectTaskResult;
 import saker.build.task.utils.annot.DataContext;
-import saker.build.task.utils.annot.SakerInput;
 import saker.build.task.utils.dependencies.EqualityTaskOutputChangeDetector;
+import saker.build.thirdparty.saker.util.ObjectUtils;
+import saker.build.trace.BuildTrace;
 import saker.jar.create.TaskDocs.ModuleInfoMainInjectOption;
 import saker.jar.create.TaskDocs.ModuleInfoVersionInjectOption;
 import saker.jar.create.TaskDocs.MultiReleaseVersionKey;
 import saker.jar.create.TaskDocs.ServicesKey;
 import saker.jar.create.TaskDocs.ServicesValue;
+import saker.jar.create.option.JarCreateDataContext;
 import saker.jar.create.option.JarManifestTaskOption;
 import saker.jar.create.option.SimpleJarManifestTaskOption;
 import saker.jar.create.transformer.ManifestInjectingZipResourceTransformerFactory;
@@ -54,10 +55,6 @@ import saker.nest.scriptinfo.reflection.annot.NestParameterInformation;
 import saker.nest.scriptinfo.reflection.annot.NestTaskInformation;
 import saker.nest.scriptinfo.reflection.annot.NestTypeUsage;
 import saker.nest.utils.FrontendTaskFactory;
-import saker.build.thirdparty.saker.util.ImmutableUtils;
-import saker.build.thirdparty.saker.util.ObjectUtils;
-import saker.build.thirdparty.saker.util.function.Functionals;
-import saker.build.trace.BuildTrace;
 import saker.zip.api.create.ZipCreationTaskBuilder;
 import saker.zip.main.create.ZipCreateTaskFactory;
 import saker.zip.main.create.option.ZipContentsTaskOption;
@@ -163,18 +160,8 @@ public class JarCreateTaskFactory extends FrontendTaskFactory<Object> {
 		private static final SakerPath DEFAULT_BUILD_SUBDIRECTORY_PATH = SakerPath.valueOf(TASK_NAME);
 		private static final SakerPath DEFAULT_OUTPUT_PATH = SakerPath.valueOf("output.jar");
 
-		@SakerInput({ "MultiReleaseContent", "MultiReleaseContents" })
-		public Map<Integer, ZipContentsTaskOption> multiReleaseContents = Collections.emptyNavigableMap();
-
-		@SakerInput("Manifest")
-		public JarManifestTaskOption manifestOption;
-		@SakerInput("Services")
-		public Map<String, Collection<String>> servicesOption = Collections.emptyNavigableMap();
-
-		@SakerInput("ModuleInfoMainClass")
-		public String moduleInfoMainClass;
-		@SakerInput("ModuleInfoVersion")
-		public String moduleInfoVersion;
+		@DataContext
+		public JarCreateDataContext jarDataContext;
 
 		@DataContext
 		public ZipCreateDataContext zipDataContext;
@@ -187,13 +174,12 @@ public class JarCreateTaskFactory extends FrontendTaskFactory<Object> {
 			if (saker.build.meta.Versions.VERSION_FULL_COMPOUND >= 8_006) {
 				BuildTrace.classifyTask(BuildTrace.CLASSIFICATION_FRONTEND);
 			}
-			
+
+			JarCreateDataContext jardata = this.jarDataContext.clone();
 			ZipCreateDataContext zipdata = this.zipDataContext.clone();
-			Map<String, Collection<String>> services = ObjectUtils.cloneTreeMap(this.servicesOption,
-					Functionals.identityFunction(), ImmutableUtils::makeImmutableLinkedHashSet);
-			JarManifestTaskOption manifestopt = ObjectUtils.clone(this.manifestOption, JarManifestTaskOption::clone);
-			Map<Integer, ZipContentsTaskOption> multireleasecontents = ObjectUtils.cloneTreeMap(
-					this.multiReleaseContents, Functionals.identityFunction(), ZipContentsTaskOption::clone);
+			Map<String, Collection<String>> services = jardata.getServices();
+			JarManifestTaskOption manifestopt = jardata.getManifest();
+			Map<Integer, ZipContentsTaskOption> multireleasecontents = jardata.getMultiReleaseContents();
 
 			SakerPath output = zipdata.outputOption;
 			if (output == null || output.equals(SakerPath.EMPTY)) {
@@ -266,9 +252,11 @@ public class JarCreateTaskFactory extends FrontendTaskFactory<Object> {
 			if (manifest != null) {
 				taskbuilder.addResourceTransformer(new ManifestInjectingZipResourceTransformerFactory(manifest));
 			}
-			if (moduleInfoMainClass != null || moduleInfoVersion != null) {
+			String moduleinfomainclass = jardata.getModuleInfoMainClass();
+			String moduleinfoversion = jardata.getModuleInfoVersion();
+			if (moduleinfomainclass != null || moduleinfoversion != null) {
 				taskbuilder.addResourceTransformer(
-						new ModuleInfoInjectingZipResourceTransformerFactory(moduleInfoMainClass, moduleInfoVersion));
+						new ModuleInfoInjectingZipResourceTransformerFactory(moduleinfomainclass, moduleinfoversion));
 			}
 
 			TaskFactory<?> workerfactory = taskbuilder.buildTaskFactory();
