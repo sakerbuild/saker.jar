@@ -19,14 +19,15 @@ import java.util.Map;
 
 import saker.jar.create.TaskDocs.ManifestEntryAttributes;
 import saker.jar.create.TaskDocs.ManifestEntryName;
+import saker.jar.create.TaskDocs.ManifestMainAttributes;
 import saker.nest.scriptinfo.reflection.annot.NestFieldInformation;
 import saker.nest.scriptinfo.reflection.annot.NestInformation;
 import saker.nest.scriptinfo.reflection.annot.NestTypeUsage;
 
 @NestInformation("Represents a configuration of Java Archive Manifest entry attributes.")
 @NestFieldInformation(value = "MainAttributes",
-		type = @NestTypeUsage(ManifestEntryAttributes.class),
-		info = @NestInformation("Specifies attributes for the main attributes of the Manifest.\n"
+		type = @NestTypeUsage(ManifestMainAttributes.class),
+		info = @NestInformation("Specifies attributes for the main section of the Manifest.\n"
 				+ "Main-Class and similar attributes should be defined here."))
 @NestFieldInformation(value = "EntryAttributes",
 		type = @NestTypeUsage(value = Map.class,
