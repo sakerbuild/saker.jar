@@ -31,6 +31,9 @@ compile(
 			)),
 		],
 		Identifier: saker.jar,
+		SourceVersion: 8,
+		TargetVersion: 8,
+		Parameters: [--release, 8]
 	)
 }
 export(
@@ -169,7 +172,7 @@ test(){
 		},
 		IgnoreFileChanges: [
 			std.file.place(test/build),
-		],
+		] + $export[bundlepaths],
 		MaxJVMCount: 1,
 		FailFast: true,
 		AbortOnFail: true,

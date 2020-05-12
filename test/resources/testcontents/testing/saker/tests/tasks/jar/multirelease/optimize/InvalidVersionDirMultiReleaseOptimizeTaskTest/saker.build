@@ -1,0 +1,5 @@
+build(
+	out jarpath
+) {
+	$jarpath = saker.jar.multi_release.optimize(input.jar)[Path]
+}

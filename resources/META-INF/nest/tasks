@@ -1,1 +1,2 @@
 saker.jar.create=saker.jar.create.JarCreateTaskFactory
+saker.jar.multi_release.optimize=saker.jar.multirelease.optimize.MultiReleaseOptimizerTaskFactory
