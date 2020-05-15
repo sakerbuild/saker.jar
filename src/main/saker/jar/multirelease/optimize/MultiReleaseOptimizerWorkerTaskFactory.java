@@ -79,19 +79,19 @@ public class MultiReleaseOptimizerWorkerTaskFactory implements TaskFactory<Multi
 		if (saker.build.meta.Versions.VERSION_FULL_COMPOUND >= 8_006) {
 			BuildTrace.classifyTask(BuildTrace.CLASSIFICATION_WORKER);
 		}
-		taskcontext.setStandardOutDisplayIdentifier(
-				MultiReleaseOptimizerTaskFactory.TASK_NAME + ":" + SakerStandardUtils.getFileLocationFileName(input));
 
 		MultiReleaseOptimizerWorkerTaskIdentifier taskid = (MultiReleaseOptimizerWorkerTaskIdentifier) taskcontext
 				.getTaskId();
+		SakerPath outputrelativepath = taskid.getOutput();
+
+		String outputfilename = outputrelativepath.getFileName();
+		taskcontext.setStandardOutDisplayIdentifier("jar.multi_release.optimize:" + outputfilename);
 
 		SakerDirectory builddir = SakerPathFiles.requireBuildDirectory(taskcontext);
-		SakerPath outputrelativepath = taskid.getOutput();
 		SakerDirectory outputparentdir = taskcontext.getTaskUtilities().resolveDirectoryAtRelativePathCreate(builddir,
 				SakerPath.valueOf(MultiReleaseOptimizerTaskFactory.TASK_NAME).resolve(outputrelativepath.getParent()));
 
-		String outputfilename = outputrelativepath.getFileName();
-
+		@SuppressWarnings("deprecation")
 		Path mirrorpath = taskcontext
 				.mirror(outputparentdir, OnlyDirectoryCreateSynchronizeDirectoryVisitPredicate.INSTANCE)
 				.resolve(outputfilename);
@@ -136,6 +136,10 @@ public class MultiReleaseOptimizerWorkerTaskFactory implements TaskFactory<Multi
 
 		SakerPath outfilepath = outfile.getSakerPath();
 		taskcontext.reportOutputFileDependency(null, outfilepath, outfile.getContentDescriptor());
+
+		if (saker.build.meta.Versions.VERSION_FULL_COMPOUND >= 8_007) {
+			BuildTrace.reportOutputArtifact(outfilepath, BuildTrace.ARTIFACT_EMBED_DEFAULT);
+		}
 
 		MultiReleaseOptimizerWorkerTaskOutputImpl result = new MultiReleaseOptimizerWorkerTaskOutputImpl(outfilepath);
 		taskcontext.reportSelfTaskOutputChangeDetector(new EqualityTaskOutputChangeDetector(result));
