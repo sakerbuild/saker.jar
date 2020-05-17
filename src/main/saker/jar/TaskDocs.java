@@ -13,10 +13,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package saker.jar.create;
+package saker.jar;
 
 import java.util.Map;
 
+import saker.build.file.path.SakerPath;
 import saker.build.scripting.model.info.TypeInformationKind;
 import saker.nest.scriptinfo.reflection.annot.NestFieldInformation;
 import saker.nest.scriptinfo.reflection.annot.NestInformation;
@@ -172,5 +173,13 @@ public class TaskDocs {
 	@NestTypeInformation(kind = TypeInformationKind.LITERAL, qualifiedName = "ModuleInfoVersionAttribute")
 	@NestInformation("Version string that is injected into the module-info.class entry of the created JAR.")
 	public static class ModuleInfoVersionInjectOption {
+	}
+
+	@NestTypeInformation(qualifiedName = "MultiReleaseOptimizerTaskOutput")
+	@NestInformation("Output of the Multi-Release JAR optimization task.")
+	@NestFieldInformation(value = "Path",
+			type = @NestTypeUsage(SakerPath.class),
+			info = @NestInformation("Absolute execution path to the optimized output JAR file."))
+	public static class DocMultiReleaseOptimizerTaskOutput {
 	}
 }

@@ -24,10 +24,36 @@ import saker.build.task.utils.SimpleStructuredObjectTaskResult;
 import saker.build.task.utils.annot.SakerInput;
 import saker.build.task.utils.dependencies.EqualityTaskOutputChangeDetector;
 import saker.build.trace.BuildTrace;
+import saker.jar.TaskDocs.DocMultiReleaseOptimizerTaskOutput;
+import saker.nest.scriptinfo.reflection.annot.NestInformation;
+import saker.nest.scriptinfo.reflection.annot.NestParameterInformation;
+import saker.nest.scriptinfo.reflection.annot.NestTaskInformation;
+import saker.nest.scriptinfo.reflection.annot.NestTypeUsage;
 import saker.nest.utils.FrontendTaskFactory;
 import saker.std.api.file.location.FileLocation;
 import saker.std.api.util.SakerStandardUtils;
 
+@NestTaskInformation(returnType = @NestTypeUsage(DocMultiReleaseOptimizerTaskOutput.class))
+@NestInformation("Optimizes an input Multi-Release JAR file by removing duplicate entries.\n"
+		+ "The task will remove the files in the archive which are present in multiple release "
+		+ "paths and have the same contents. The removal will preserve correctness of the archive "
+		+ "and won't remove entries that are overridden in a different release, but also present with "
+		+ "the same contents.\n"
+		+ "E.g. if the entry file.txt is present in versions 8, 9, 10, and have the contents 8: a, 9: b, 10: a, "
+		+ "then no entries will be removed.")
+@NestParameterInformation(value = "Input",
+		aliases = { "" },
+		required = true,
+		type = @NestTypeUsage(MultiReleaseOptimizerInputFileTaskOption.class),
+		info = @NestInformation("The input archive to optimize.\n"
+				+ "Can be the output of the saker.zip.create() and related tasks, and also paths "
+				+ "to the archive itself."))
+@NestParameterInformation(value = "Output",
+		type = @NestTypeUsage(SakerPath.class),
+		info = @NestInformation("Specifies the output path of the optimized archive.\n"
+				+ "The path must be a forward relative path that will be used to place the "
+				+ "output in the build directory.\n"
+				+ "If not specified, it will be automatically determined based on the input file name."))
 public class MultiReleaseOptimizerTaskFactory extends FrontendTaskFactory<Object> {
 	private static final long serialVersionUID = 1L;
 

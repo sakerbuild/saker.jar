@@ -17,10 +17,12 @@ package saker.jar.multirelease.optimize;
 
 import saker.build.file.path.SakerPath;
 import saker.build.task.TaskContext;
+import saker.nest.scriptinfo.reflection.annot.NestInformation;
 import saker.std.api.file.location.ExecutionFileLocation;
 import saker.std.api.file.location.FileLocation;
 import saker.zip.api.create.ZipCreatorTaskOutput;
 
+@NestInformation("Archive input to the Multi-Release optimization task.")
 public abstract class MultiReleaseOptimizerInputFileTaskOption {
 	public abstract FileLocation toFileLocation(TaskContext taskcontext);
 

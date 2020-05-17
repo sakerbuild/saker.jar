@@ -17,9 +17,9 @@ package saker.jar.create.option;
 
 import java.util.Map;
 
-import saker.jar.create.TaskDocs.ManifestEntryAttributes;
-import saker.jar.create.TaskDocs.ManifestEntryName;
-import saker.jar.create.TaskDocs.ManifestMainAttributes;
+import saker.jar.TaskDocs.ManifestEntryAttributes;
+import saker.jar.TaskDocs.ManifestEntryName;
+import saker.jar.TaskDocs.ManifestMainAttributes;
 import saker.nest.scriptinfo.reflection.annot.NestFieldInformation;
 import saker.nest.scriptinfo.reflection.annot.NestInformation;
 import saker.nest.scriptinfo.reflection.annot.NestTypeUsage;
