@@ -52,6 +52,12 @@ public class TaskDocs {
 					@NestFieldInformation(value = "14",
 							info = @NestInformation("Multi-Release major version 14.\n"
 									+ "The specified resources are placed under META-INF/versions/14/ directory.")),
+					@NestFieldInformation(value = "15",
+							info = @NestInformation("Multi-Release major version 15.\n"
+									+ "The specified resources are placed under META-INF/versions/15/ directory.")),
+					@NestFieldInformation(value = "16",
+							info = @NestInformation("Multi-Release major version 16.\n"
+									+ "The specified resources are placed under META-INF/versions/16/ directory.")),
 
 			})
 	@NestInformation("Represents the major version for which the Multi-Release contents are specified.")

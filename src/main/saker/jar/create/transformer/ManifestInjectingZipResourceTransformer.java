@@ -58,7 +58,7 @@ public final class ManifestInjectingZipResourceTransformer implements ZipResourc
 		} else {
 			m = new Manifest(resourceinput);
 		}
-		putAttributes(m.getMainAttributes(), manifest.getMainAttributes());
+		injecttAttributes(m.getMainAttributes(), manifest.getMainAttributes());
 		Map<String, Map<String, String>> injectattributes = manifest.getEntryAttributes();
 		if (!ObjectUtils.isNullOrEmpty(injectattributes)) {
 			Map<String, Attributes> manifestentries = m.getEntries();
@@ -69,7 +69,7 @@ public final class ManifestInjectingZipResourceTransformer implements ZipResourc
 				}
 
 				Attributes subattrs = new Attributes(attrvals.size());
-				putAttributes(subattrs, attrvals);
+				injecttAttributes(subattrs, attrvals);
 				manifestentries.put(entry.getKey(), subattrs);
 			}
 		}
@@ -100,7 +100,7 @@ public final class ManifestInjectingZipResourceTransformer implements ZipResourc
 
 		resultmainattributes.putIfAbsent(Attributes.Name.MANIFEST_VERSION, "1.0");
 
-		putAttributes(resultmainattributes, manifest.getMainAttributes());
+		injecttAttributes(resultmainattributes, manifest.getMainAttributes());
 
 		Map<String, Map<String, String>> attrs = manifest.getEntryAttributes();
 		if (!ObjectUtils.isNullOrEmpty(attrs)) {
@@ -110,7 +110,7 @@ public final class ManifestInjectingZipResourceTransformer implements ZipResourc
 				Map<String, String> attrvals = entry.getValue();
 				if (attrvals != null) {
 					Attributes subattrs = new Attributes(attrvals.size());
-					putAttributes(subattrs, attrvals);
+					injecttAttributes(subattrs, attrvals);
 					manifestentries.put(entry.getKey(), subattrs);
 				}
 			}
@@ -118,12 +118,18 @@ public final class ManifestInjectingZipResourceTransformer implements ZipResourc
 		return result;
 	}
 
-	private static void putAttributes(Attributes attrs, Map<String, String> attrmap) {
+	private static void injecttAttributes(Attributes attrs, Map<String, String> attrmap) {
 		if (ObjectUtils.isNullOrEmpty(attrmap)) {
 			return;
 		}
 		for (Entry<String, String> entry : attrmap.entrySet()) {
-			attrs.putValue(entry.getKey(), entry.getValue());
+			Attributes.Name key = new Attributes.Name(entry.getKey());
+			String val = entry.getValue();
+			if (val == null) {
+				attrs.remove(key);
+			} else {
+				attrs.put(key, val);
+			}
 		}
 	}
 }

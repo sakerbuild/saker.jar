@@ -1,0 +1,16 @@
+build(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: output.jar, 
+		Include: [
+			include.jar,
+		],
+		Manifest: {
+			MainAttributes: {
+				Second-Attr: null
+			}
+		}
+	)
+}

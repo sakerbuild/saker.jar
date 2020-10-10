@@ -120,7 +120,8 @@ import saker.zip.main.doc.TaskDocs.DocZipCreatorTaskOutput;
 				+ "Any attributes specified in this option will result in them being injected into the META-INF/MANIFEST.MF "
 				+ "Manifest entry in the archive.\n"
 				+ "If a manifest entry was not specified using resources, a new one will be added to the archive.\n"
-				+ "The Manifest-Version: 1.0 required attribute is automatically added if missing."))
+				+ "The Manifest-Version: 1.0 required attribute is automatically added if missing.\n"
+				+ "If a specified value for an attribute is null, it will be removed."))
 @NestParameterInformation(value = "Services",
 		type = @NestTypeUsage(value = Map.class, elementTypes = { ServicesKey.class, ServicesValue.class }),
 		info = @NestInformation("Specifies Java services that should be declared by the created Java Archive.\n"
