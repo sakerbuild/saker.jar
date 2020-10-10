@@ -1,6 +1,6 @@
 # saker.jar
 
-![Build status](https://img.shields.io/azure-devops/build/sakerbuild/e2bc4049-c2f6-497b-8d3c-bed869f837dd/5/master) [![Latest version](https://mirror.nest.saker.build/badges/saker.jar/version.svg)](https://nest.saker.build/package/saker.jar "saker.jar | saker.nest")
+[![Build status](https://img.shields.io/azure-devops/build/sakerbuild/e2bc4049-c2f6-497b-8d3c-bed869f837dd/5/master)](https://dev.azure.com/sakerbuild/saker.jar/_build) [![Latest version](https://mirror.nest.saker.build/badges/saker.jar/version.svg)](https://nest.saker.build/package/saker.jar "saker.jar | saker.nest")
 
 Build tasks and supporting classes for the [saker.build system](https://saker.build) for creating Java Archives during build. The tasks use the [saker.zip](https://github.com/sakerbuild/saker.zip) package behind the scenes, but add additional functionality for convenient JAR creation. (E.g. manifest and service declaration, multi-release support, etc...)
 
