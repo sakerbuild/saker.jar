@@ -26,10 +26,12 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import saker.build.file.path.SakerPath;
+import saker.build.thirdparty.saker.util.ImmutableUtils;
 import saker.build.thirdparty.saker.util.StringUtils;
 import saker.build.thirdparty.saker.util.io.SerialUtils;
 import saker.zip.api.create.ZipResourceTransformationContext;
@@ -40,7 +42,7 @@ public class ServiceInjectingZipResourceTransformerFactory implements ZipResourc
 	private static final long serialVersionUID = 1L;
 
 	private SakerPath resourcePath;
-	private Set<String> services;
+	private List<String> services;
 
 	/**
 	 * For {@link Externalizable}.
@@ -48,9 +50,9 @@ public class ServiceInjectingZipResourceTransformerFactory implements ZipResourc
 	public ServiceInjectingZipResourceTransformerFactory() {
 	}
 
-	public ServiceInjectingZipResourceTransformerFactory(SakerPath resourcePath, Set<String> services) {
+	public ServiceInjectingZipResourceTransformerFactory(SakerPath resourcePath, Collection<String> services) {
 		this.resourcePath = resourcePath;
-		this.services = services;
+		this.services = ImmutableUtils.makeImmutableList(services);
 	}
 
 	@Override
@@ -151,7 +153,7 @@ public class ServiceInjectingZipResourceTransformerFactory implements ZipResourc
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 		resourcePath = (SakerPath) in.readObject();
-		services = SerialUtils.readExternalImmutableLinkedHashSet(in);
+		services = SerialUtils.readExternalImmutableList(in);
 	}
 
 	@Override

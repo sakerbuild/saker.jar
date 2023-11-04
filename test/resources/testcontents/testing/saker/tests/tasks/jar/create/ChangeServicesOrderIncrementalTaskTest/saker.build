@@ -1,0 +1,11 @@
+build(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: output.jar, 
+		Services: {
+			my.Service: [first.Service,second.Service]
+		},
+	)
+}
