@@ -1,0 +1,38 @@
+build(
+	out jar,
+	out jarpath = $jar[Path],
+) {
+	$jar = saker.jar.create(
+		Output: output.jar, 
+		Resources: {
+			Resources: *.txt
+			Compression: STORED
+		},
+		Include: [
+			{
+				Archive: include.jar,
+				Compression: STORED
+			},
+			{
+				Archive: include.jar,
+				TargetDirectory: inctarget,
+			},
+		],
+		MultiReleaseContents: {
+			8: {
+				Resources: {
+					Files: mr.dat,
+					TargetDirectory: mrdir
+					Compression: STORED
+				},
+			},
+			9: {
+				Resources: {
+					Files: mr.dat,
+					TargetDirectory: mrdir
+					Compression: STORED
+				},
+			},
+		},
+	)
+}

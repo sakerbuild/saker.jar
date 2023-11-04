@@ -24,10 +24,12 @@ import java.util.TreeMap;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import saker.build.file.path.SakerPath;
+import saker.build.file.path.WildcardPath;
 import saker.build.file.provider.SakerFileProvider;
 import saker.build.thirdparty.saker.util.io.ByteArrayRegion;
 import saker.build.thirdparty.saker.util.io.ByteSource;
@@ -119,5 +121,29 @@ public class JarCreatorUtils {
 		} catch (IOException e) {
 			throw new AssertionError(e);
 		}
+	}
+
+	public static void assertCompression(ByteArrayRegion bytes, int compression) throws IOException, AssertionError {
+		assertCompression(bytes, compression, null);
+	}
+
+	public static void assertCompression(ByteArrayRegion bytes, int compression, WildcardPath entries)
+			throws IOException, AssertionError {
+		Map<String, Integer> compressionmethods = getCompressionMethods(bytes);
+		Stream<Entry<String, Integer>> stream = compressionmethods.entrySet().stream();
+		if (entries != null) {
+			stream = stream.filter(e -> entries.includes(SakerPath.valueOf(e.getKey())));
+		}
+		SakerTestCase.assertTrue(stream.allMatch(e -> e.getValue().equals(compression)), compressionmethods::toString);
+	}
+
+	public static Map<String, Integer> getCompressionMethods(ByteArrayRegion bytes) throws IOException, AssertionError {
+		TreeMap<String, Integer> result = new TreeMap<>();
+		try (ZipInputStream zis = new ZipInputStream(new UnsyncByteArrayInputStream(bytes))) {
+			for (ZipEntry e; (e = zis.getNextEntry()) != null;) {
+				result.put(e.getName(), e.getMethod());
+			}
+		}
+		return result;
 	}
 }
