@@ -23,3 +23,10 @@ steps:
   inputs:
     pathtoPublish: build/build_export.trace
     artifactName: export_trace
+
+- script: cat hs_err* 2>/dev/null || echo "No hs_err files."
+  condition: or( eq( variables['Agent.OS'], 'Linux' ), eq( variables['Agent.OS'], 'Darwin' ) )
+  displayName: 'Display JVM crash logs (Linux)'
+- script: type hs_err* 2>nul || exit 0
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: 'Display JVM crash logs (Win)'
