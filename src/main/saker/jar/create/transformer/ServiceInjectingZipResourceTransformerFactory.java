@@ -59,6 +59,7 @@ public class ServiceInjectingZipResourceTransformerFactory implements ZipResourc
 			private boolean transformed = false;
 
 			@Override
+			@SuppressWarnings("deprecation") // this process function was overridden, but we're fine with this implementation
 			public boolean process(ZipResourceTransformationContext context, SakerPath resourcepath,
 					InputStream resourceinput) throws IOException {
 				if (transformed) {
@@ -103,7 +104,7 @@ public class ServiceInjectingZipResourceTransformerFactory implements ZipResourc
 							}
 							if (!presentservices.add(service)) {
 								//the service is already present. add the comment to the output nonetheless
-								servicelines.add(line.substring(idx ));
+								servicelines.add(line.substring(idx));
 								continue;
 							}
 							servicelines.add(line);

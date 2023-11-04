@@ -17,12 +17,14 @@ package saker.jar.create;
 
 import java.util.Date;
 
+import saker.build.exception.InvalidPathFormatException;
 import saker.build.file.path.SakerPath;
 import saker.build.task.TaskFactory;
 import saker.build.task.identifier.TaskIdentifier;
 import saker.std.api.file.location.FileLocation;
 import saker.zip.api.create.IncludeResourceMapping;
 import saker.zip.api.create.ZipCreationTaskBuilder;
+import saker.zip.api.create.ZipResourceEntry;
 import saker.zip.api.create.ZipResourceTransformerFactory;
 
 class TargetDirectoryResolvingZipCreatingTaskBuilder implements ZipCreationTaskBuilder {
@@ -53,6 +55,13 @@ class TargetDirectoryResolvingZipCreatingTaskBuilder implements ZipCreationTaskB
 	@Override
 	public void addResource(FileLocation location, SakerPath archivepath) {
 		builder.addResource(location, targetDirectory.resolve(archivepath));
+	}
+
+	@Override
+	public void addResource(FileLocation location, ZipResourceEntry resourceentry)
+			throws NullPointerException, InvalidPathFormatException {
+		builder.addResource(location,
+				resourceentry.withEntryPath(targetDirectory.resolve(resourceentry.getEntryPath())));
 	}
 
 	@Override

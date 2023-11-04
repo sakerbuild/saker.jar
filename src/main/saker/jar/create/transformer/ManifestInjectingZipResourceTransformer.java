@@ -39,6 +39,7 @@ public final class ManifestInjectingZipResourceTransformer implements ZipResourc
 	}
 
 	@Override
+	@SuppressWarnings("deprecation") // this process function was overridden, but we're fine with this implementation 
 	public boolean process(ZipResourceTransformationContext context, SakerPath resourcepath, InputStream resourceinput)
 			throws IOException {
 		if (hadManifest) {

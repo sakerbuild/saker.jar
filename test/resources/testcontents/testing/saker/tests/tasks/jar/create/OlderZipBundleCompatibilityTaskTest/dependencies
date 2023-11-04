@@ -1,0 +1,4 @@
+saker.zip
+	classpath: [0.8, 0.8.5)
+saker.zip-api
+	classpath: [0.8, 0.8.5)

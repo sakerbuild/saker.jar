@@ -37,7 +37,7 @@ compile(
 	)
 }
 export(
-	out compile = include(compile),
+	out compile = compile(),
 	out jar,
 	out sourcejar,
 	
@@ -90,12 +90,12 @@ export(
 	)
 }
 install(
-	out export = include(export)
+	out export = export()
 ){
-		nest.local.install($export[bundlepaths])
+	nest.local.install($export[bundlepaths])
 }
 upload(){
-	$export = include(export, Path: saker.build)
+	$export = export()
 	include(Path: secret/secrets.build)
 	nest.server.upload(
 		Bundles: $export[bundlepaths],
@@ -105,7 +105,7 @@ upload(){
 	)
 }
 test(){
-	$export = include(export)
+	$export = export()
 	$jar = $export[jar]
 	
 	$instrumentedjar = nest.test.instrument(
@@ -130,6 +130,8 @@ test(){
 		Bundles: global(saker.jar_DEPENDENCIES),
 		Filters: nest.dependency.filter.kind(classpath)
 	)
+	
+	$bundlemirrorpathsarg = foreach $path in $export[bundlepaths]: "{ std.file.mirror($path) };" 
 	
 	$test = saker.java.test(
 		TestRunnerClassPath: [
@@ -158,11 +160,17 @@ test(){
 		TestClassParameters: {
 			**: {
 				RepositoryJarPath: nest.bundle.localize("saker.nest-test-v{ static(VERSION_saker.nest) }")[BundleLocalPaths][0],
-				RepositoryParameterBundles: "{
-						foreach $path in $export[bundlepaths]: "{ std.file.mirror($path) };" 
-					};{ 
+				RepositoryParameterBundles: "{ $bundlemirrorpathsarg };{ 
 						foreach $path in nest.bundle.localize($resolveddependencies)[BundleLocalPaths]: ";{ $path }"
 					}",
+			}
+			**.OlderZipBundleCompatibilityTaskTest: {
+				OlderZipBundles: "{ $bundlemirrorpathsarg };{
+						foreach $path in nest.bundle.localize(nest.dependency.resolve(
+								DependencyFile: test/resources/testcontents/testing/saker/tests/tasks/jar/create/OlderZipBundleCompatibilityTaskTest/dependencies,
+								Filters: nest.dependency.filter.kind(classpath)
+							))[BundleLocalPaths]: ";{ $path }"
+					}" 
 			}
 		},
 		TestInvokerParameters: {
