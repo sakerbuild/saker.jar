@@ -172,6 +172,10 @@ test(){
 		IgnoreFileChanges: [
 			std.file.place(test/build),
 		] + $export[bundlepaths],
+		ProcessJVMParameters: [ 
+			#"-agentlib:jdwp=transport=dt_socket,address=localhost:5432,server=y,suspend=y,quiet=y"
+			"-Xverify:all" # due to a crash that we encountered: fatal error: Illegal class file encountered. Try running with -Xverify:all in method parseClassValue
+		],
 		MaxJVMCount: 1,
 		FailFast: true,
 		AbortOnFail: true,
